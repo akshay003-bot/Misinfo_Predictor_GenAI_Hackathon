@@ -277,6 +277,68 @@
             margin-left: 0.75rem;
             color: #6B7280;
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(17, 24, 39, 0.6); /* bg-gray-900 with opacity */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            transform: scale(1);
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal-overlay.hidden .modal-content {
+            transform: scale(0.95);
+        }
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0 0 1rem 0;
+        }
+        .modal-text {
+            font-size: 0.9rem;
+            color: #4B5563;
+            line-height: 1.6;
+            margin: 0 0 1rem 0;
+        }
+        .modal-button {
+            display: block;
+            width: 100%;
+            margin-top: 1.5rem;
+            background-color: #2563EB;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .modal-button:hover {
+            background-color: #1D4ED8;
+        }
+
     </style>
 </head>
 <body>
@@ -350,6 +412,20 @@
         </div>
     </footer>
 
+    <!-- Info Modal -->
+    <div id="infoModalOverlay" class="modal-overlay">
+        <div id="infoModal" class="modal-content">
+            <h3 class="modal-title">A Note for the Judges</h3>
+            <p class="modal-text">
+                Welcome to The Beacon. Our primary vision for this project was a fully integrated browser extension. Due to platform-specific publishing constraints that were unresolvable within the hackathon timeline, we have pivoted to this fully functional web application to demonstrate the core technology.
+            </p>
+            <p class="modal-text">
+                To provide a complete picture of our original concept, <strong>we have included a video demonstration of the web extension prototype running on our local system</strong> in our final submission. This website showcases the same powerful backend and analytical capabilities. Thank you for your consideration.
+            </p>
+            <button id="closeModalButton" class="modal-button">Proceed to the Web App</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const textInput = document.getElementById('textInput');
@@ -362,10 +438,28 @@
             const credibilityMeter = document.getElementById('credibility-meter');
             const credibilityText = document.getElementById('credibility-text');
             const credibilityBar = document.getElementById('credibility-bar');
+            
+            // Modal Elements
+            const infoModalOverlay = document.getElementById('infoModalOverlay');
+            const closeModalButton = document.getElementById('closeModalButton');
+
 
             // IMPORTANT: Set this to your deployed server's URL
             const API_BASE_URL = 'http://localhost:3000';
 
+            // --- Modal Logic ---
+            const closeModal = () => {
+                infoModalOverlay.classList.add('hidden');
+            };
+            closeModalButton.addEventListener('click', closeModal);
+            infoModalOverlay.addEventListener('click', (event) => {
+                if (event.target === infoModalOverlay) {
+                    closeModal();
+                }
+            });
+
+
+            // --- Core App Logic ---
             const updateTime = () => {
                 const timeElement = document.getElementById('currentTime');
                 if (timeElement) {
@@ -507,4 +601,5 @@
     </script>
 </body>
 </html>
+
 
