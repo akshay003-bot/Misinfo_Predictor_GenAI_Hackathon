@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Beacon | AI-Powered Content Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Body & Layout */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+            color: #1F2937;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        main {
+            flex-grow: 1;
+        }
+        .container {
+            width: 100%;
+            max-width: 1152px; /* Equivalent to max-w-6xl */
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1rem 1rem;
+        }
+        @media (min-width: 768px) {
+            .container { padding: 1.5rem 1rem; }
+        }
+        @media (min-width: 1024px) {
+            .container { padding: 2rem 1rem; }
+        }
+
+        /* Header & Footer */
+        .header {
+            background-color: white;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+        }
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .logo-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        .tagline {
+            font-size: 0.75rem;
+            color: #6B7280;
+        }
+        .footer {
+            background-color: white;
+            margin-top: 2rem;
+            padding: 1rem 0;
+            border-top: 1px solid #E5E7EB;
+        }
+        .footer-content {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6B7280;
+        }
+        .footer-content p {
+            margin: 0.25rem 0;
+        }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        @media (min-width: 1024px) {
+            .content-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Cards */
+        .card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .card-description {
+            font-size: 0.875rem;
+            color: #4B5563;
+            margin-bottom: 1rem;
+        }
+
+        /* Input & Buttons */
+        .text-input {
+            width: 100%;
+            height: 16rem; /* 256px */
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            transition: box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+        .text-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #3B82F6;
+            border-color: #3B82F6;
+        }
+        .button-grid {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+        @media (min-width: 640px) {
+            .button-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        .scan-button {
+            width: 100%;
+            padding: 0.625rem 1rem;
+            color: white;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            border: none;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .scan-button:hover:not(:disabled) {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .scan-button:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+        }
+        .scan-button.content { background-color: #2563EB; }
+        .scan-button.content:hover:not(:disabled) { background-color: #1D4ED8; }
+        .scan-button.phishing { background-color: #D97706; }
+        .scan-button.phishing:hover:not(:disabled) { background-color: #B45309; }
+        .scan-button.links { background-color: #DC2626; }
+        .scan-button.links:hover:not(:disabled) { background-color: #B91C1C; }
+
+        /* Results Display */
+        .status-bar {
+            font-size: 0.875rem;
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            background-color: #F3F4F6;
+            color: #4B5563;
+        }
+        .status-scanning { background-color: #DBEAFE; color: #1E40AF; }
+        .status-clean { background-color: #D1FAE5; color: #065F46; }
+        .status-risk { background-color: #FEF3C7; color: #92400E; }
+        .status-error { background-color: #FEE2E2; color: #991B1B; }
+        
+        #credibility-meter {
+            margin-top: 1rem;
+        }
+        .credibility-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #4B5563;
+            margin-bottom: 0.25rem;
+        }
+        .credibility-label span { font-weight: 700; }
+        .credibility-bar-container {
+            width: 100%;
+            background-color: #E5E7EB;
+            border-radius: 9999px;
+            height: 0.625rem;
+        }
+        .credibility-bar {
+            height: 100%;
+            border-radius: 9999px;
+            transition: all 0.5s ease-in-out;
+        }
+        .credibility-excellent { background-color: #22C55E; }
+        .credibility-high { background-color: #84CC16; }
+        .credibility-medium { background-color: #FACC15; }
+        .credibility-low { background-color: #F97316; }
+        .credibility-very-low { background-color: #EF4444; }
+        
+        #results {
+            margin-top: 1rem;
+            height: 22rem;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        #placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #9CA3AF;
+        }
+        #placeholder svg {
+            height: 3rem;
+            width: 3rem;
+        }
+        #placeholder p {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .result-card {
+            border-left-width: 4px;
+            padding: 1rem;
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+            background-color: #F9FAFB;
+        }
+        .result-card-title {
+            font-weight: 600;
+            color: #1F2937;
+            font-size: 0.875rem;
+        }
+        .result-card-reasons {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: #4B5563;
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .result-card-reasons li {
+            position: relative;
+            padding-left: 1rem;
+        }
+        .result-card-reasons li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #3B82F6;
+        }
+        .result-card.clean { border-left-color: #10B981; }
+        .result-card.risk { border-left-color: #F97316; }
+        .result-card.error { border-left-color: #EF4444; }
+
+        /* Spinner */
+        .spinner-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #DBEAFE;
+            border-top-color: #2563EB;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner-container p {
+            margin-left: 0.75rem;
+            color: #6B7280;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="container">
+            <div class="nav">
+                <div class="logo-group">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L3 7V17L12 22L21 17V7L12 2Z" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 22V12" stroke="#60A5FA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 7L12 12L3 7" stroke="#60A5FA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 12V7" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h1 class="logo-title">The Beacon</h1>
+                </div>
+                <span class="tagline">A MisinfoShield Project from Tezpur, Assam</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="content-grid">
+            
+            <div class="card">
+                <h2 class="card-title">Analyze Your Content</h2>
+                <p class="card-description">Paste any text, article, or email into the box below. The Beacon will analyze it for misinformation, bias, phishing, and malicious links.</p>
+                <textarea id="textInput" class="text-input" placeholder="Paste your text here..."></textarea>
+                <div class="button-grid">
+                    <button id="analyzeButton" class="scan-button content">
+                        Content Scan
+                    </button>
+                    <button id="phishingButton" class="scan-button phishing">
+                        Phishing Scan
+                    </button>
+                    <button id="linksButton" class="scan-button links">
+                        Link Scan
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Analysis Report</h2>
+                <div id="status" class="status-bar">
+                    Results will appear here.
+                </div>
+
+                <div id="credibility-meter" style="display: none;">
+                    <div class="credibility-label">Overall Credibility: <span id="credibility-text"></span></div>
+                    <div class="credibility-bar-container">
+                        <div id="credibility-bar" class="credibility-bar"></div>
+                    </div>
+                </div>
+
+                <div id="results">
+                    <div id="placeholder">
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p>Waiting for input to analyze...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 The Beacon. All rights reserved.</p>
+            <p>A project from Tezpur, Assam, India. Current time is <span id="currentTime"></span>.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const textInput = document.getElementById('textInput');
+            const analyzeButton = document.getElementById('analyzeButton');
+            const phishingButton = document.getElementById('phishingButton');
+            const linksButton = document.getElementById('linksButton');
+            const statusDiv = document.getElementById('status');
+            const resultsDiv = document.getElementById('results');
+            const placeholder = document.getElementById('placeholder');
+            const credibilityMeter = document.getElementById('credibility-meter');
+            const credibilityText = document.getElementById('credibility-text');
+            const credibilityBar = document.getElementById('credibility-bar');
+
+            // IMPORTANT: Set this to your deployed server's URL
+            const API_BASE_URL = 'http://localhost:3000';
+
+            const updateTime = () => {
+                const timeElement = document.getElementById('currentTime');
+                if (timeElement) {
+                    timeElement.textContent = new Date().toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' });
+                }
+            };
+            setInterval(updateTime, 1000);
+            updateTime();
+
+            const showStatus = (message, type = 'scanning') => {
+                const typeClasses = {
+                    scanning: 'status-scanning',
+                    clean: 'status-clean',
+                    risk: 'status-risk',
+                    error: 'status-error',
+                };
+                statusDiv.textContent = message;
+                statusDiv.className = `status-bar ${typeClasses[type] || ''}`;
+            };
+
+            const disableButtons = (disabled) => {
+                analyzeButton.disabled = disabled;
+                phishingButton.disabled = disabled;
+                linksButton.disabled = disabled;
+            };
+
+            const extractUrls = (text) => {
+                if (!text) return [];
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                return text.match(urlRegex) || [];
+            };
+
+            const performScan = async (endpoint, body, statusMessage) => {
+                showStatus(statusMessage, 'scanning');
+                resultsDiv.innerHTML = '<div class="spinner-container"><div class="spinner"></div><p>Analyzing...</p></div>';
+                credibilityMeter.style.display = 'none';
+                if (placeholder) placeholder.style.display = 'none';
+                disableButtons(true);
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body),
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || `Server responded with status: ${response.status}`);
+                    }
+                    const analysis = await response.json();
+                    displayResults(analysis);
+                } catch (error) {
+                    console.error('Scan Error:', error);
+                    displayResults({
+                        overall: "error",
+                        flags: [{ title: "Scan Failed", reasons: [error.message] }]
+                    });
+                } finally {
+                    disableButtons(false);
+                }
+            };
+            
+            const displayResults = (analysis) => {
+                resultsDiv.innerHTML = ''; 
+
+                if (analysis.credibility) {
+                    credibilityMeter.style.display = 'block';
+                    const { score, label } = analysis.credibility;
+                    credibilityText.textContent = `${label} (${score}%)`;
+                    credibilityBar.style.width = `${score}%`;
+                    credibilityBar.className = `credibility-bar credibility-${label.toLowerCase().replace(' ', '-')}`;
+                } else {
+                    credibilityMeter.style.display = 'none';
+                }
+
+                let statusType, statusMessage;
+                switch (analysis.overall) {
+                    case "risk":
+                        statusType = 'risk';
+                        statusMessage = "⚠️ Risk Detected: Review findings below.";
+                        break;
+                    case "clean":
+                        statusType = 'clean';
+                        statusMessage = "✅ No major threats found.";
+                        break;
+                    case "error":
+                    default:
+                        statusType = 'error';
+                        statusMessage = "❌ Error: Scan could not be completed.";
+                }
+                showStatus(statusMessage, statusType);
+
+                if (!analysis.flags || analysis.flags.length === 0) {
+                    resultsDiv.innerHTML = '<div id="placeholder"><p>No specific findings to report.</p></div>';
+                    return;
+                }
+
+                analysis.flags.forEach(flag => {
+                    const card = document.createElement('div');
+                    card.className = `result-card ${statusType}`;
+                    const reasonsHtml = flag.reasons.map(r => `<li>${r.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</li>`).join('');
+                    card.innerHTML = `
+                        <div class="result-card-title">
+                            ${flag.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                        </div>
+                        <ul class="result-card-reasons">${reasonsHtml}</ul>`;
+                    resultsDiv.appendChild(card);
+                });
+            };
+
+            analyzeButton.addEventListener('click', () => {
+                const text = textInput.value;
+                if (!text || text.trim().length < 50) {
+                    displayResults({ overall: "error", flags: [{ title: "Not Enough Text", reasons: ["Please enter at least 50 characters to analyze."] }] });
+                    return;
+                }
+                performScan('/analyze', { text }, 'Analyzing content...');
+            });
+
+            phishingButton.addEventListener('click', () => {
+                const text = textInput.value;
+                 if (!text || text.trim().length === 0) {
+                    displayResults({ overall: "error", flags: [{ title: "No Text Provided", reasons: ["Please enter some text to scan for phishing."] }] });
+                    return;
+                }
+                performScan('/detect-phishing', { text }, 'Scanning for phishing...');
+            });
+
+            linksButton.addEventListener('click', () => {
+                const text = textInput.value;
+                const urls = extractUrls(text);
+                 if (urls.length === 0) {
+                    displayResults({ overall: "clean", flags: [{ title: "No Links Found", reasons: ["No scannable web links (http/https) were found in the text."] }] });
+                    return;
+                }
+                performScan('/check-urls', { urls }, 'Scanning all links...');
+            });
+        });
+    </script>
+</body>
+</html>
+
