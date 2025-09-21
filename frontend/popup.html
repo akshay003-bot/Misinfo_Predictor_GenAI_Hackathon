@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Beacon Extension</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">The Beacon</div>
+        <div id="status" class="status-bar">Status: Ready. Choose an action.</div>
+        
+        <div id="credibility-meter" class="credibility-meter" style="display: none;">
+            <div class="credibility-label">Credibility: <span id="credibility-text"></span></div>
+            <div class="credibility-bar-container">
+                <div id="credibility-bar" class="credibility-bar"></div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button id="analyzeButton">Fact-Check Content</button>
+            <button id="phishingButton" class="button-phishing">Scan for Phishing</button>
+            <button id="linksButton" class="button-webrisk">Scan Page Links</button>
+        </div>
+        <div id="results" class="results-container"></div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
