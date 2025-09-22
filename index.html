@@ -6,7 +6,6 @@
     <title>The Beacon | AI-Powered Content Analysis</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* General Body & Layout */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #F9FAFB;
@@ -32,8 +31,6 @@
         @media (min-width: 1024px) {
             .container { padding: 2rem 1rem; }
         }
-
-        /* Header & Footer */
         .header {
             background-color: white;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -84,8 +81,6 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-
-        /* Cards */
         .card {
             background-color: white;
             padding: 1.5rem;
@@ -102,8 +97,6 @@
             color: #4B5563;
             margin-bottom: 1rem;
         }
-
-        /* Input & Buttons */
         .text-input {
             width: 100%;
             height: 16rem; /* 256px */
@@ -153,8 +146,6 @@
         .scan-button.phishing:hover:not(:disabled) { background-color: #B45309; }
         .scan-button.links { background-color: #DC2626; }
         .scan-button.links:hover:not(:disabled) { background-color: #B91C1C; }
-
-        /* Results Display */
         .status-bar {
             font-size: 0.875rem;
             text-align: center;
@@ -257,7 +248,6 @@
         .result-card.risk { border-left-color: #F97316; }
         .result-card.error { border-left-color: #EF4444; }
 
-        /* Spinner */
         .spinner-container {
             display: flex;
             align-items: center;
@@ -278,7 +268,6 @@
             color: #6B7280;
         }
 
-        /* Modal Styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -412,7 +401,6 @@
         </div>
     </footer>
 
-    <!-- Info Modal -->
     <div id="infoModalOverlay" class="modal-overlay">
         <div id="infoModal" class="modal-content">
             <h3 class="modal-title">A Note for the Judges</h3>
@@ -439,15 +427,11 @@
             const credibilityText = document.getElementById('credibility-text');
             const credibilityBar = document.getElementById('credibility-bar');
             
-            // Modal Elements
             const infoModalOverlay = document.getElementById('infoModalOverlay');
             const closeModalButton = document.getElementById('closeModalButton');
 
+            const API_BASE_URL = 'https://the-beacon-backend-581886832270.us-central1.run.app/';
 
-            // IMPORTANT: Set this to your deployed server's URL
-            const API_BASE_URL = 'http://localhost:3000';
-
-            // --- Modal Logic ---
             const closeModal = () => {
                 infoModalOverlay.classList.add('hidden');
             };
@@ -458,8 +442,6 @@
                 }
             });
 
-
-            // --- Core App Logic ---
             const updateTime = () => {
                 const timeElement = document.getElementById('currentTime');
                 if (timeElement) {
@@ -601,6 +583,7 @@
     </script>
 </body>
 </html>
+
 
 
 
